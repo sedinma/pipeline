@@ -6,7 +6,8 @@ pipeline {
             steps {
                 echo 'Building the project...'
                 
-                sh 'mvn clean package' 
+            
+                bat 'mvn clean package'
             }
         }
 
@@ -14,7 +15,8 @@ pipeline {
             steps {
                 echo 'Running Unit and Integration Tests...'
                 
-                sh 'mvn test' 
+                
+                bat 'mvn test'
             }
         }
 
@@ -22,7 +24,8 @@ pipeline {
             steps {
                 echo 'Performing Code Analysis...'
                 
-                sh 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src' 
+                
+                bat 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
         }
 
@@ -30,7 +33,8 @@ pipeline {
             steps {
                 echo 'Performing Security Scan...'
                
-                sh 'dependency-check.sh --project my_project --out . --scan ./src'
+                
+                bat 'dependency-check.bat --project my_project --out . --scan ./src'
             }
         }
 
@@ -38,7 +42,8 @@ pipeline {
             steps {
                 echo 'Deploying to Staging...'
                 
-                sh 'scp target/my-app.jar user@staging-server:/path/to/deploy' 
+               
+                powershell 'Copy-Item target/my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
             }
         }
 
@@ -46,15 +51,17 @@ pipeline {
             steps {
                 echo 'Running Integration Tests on Staging...'
                 
-                sh 'curl -X GET http://staging-server/api/tests' 
+           
+                powershell 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-              
-                sh 'scp target/my-app.jar user@production-server:/path/to/deploy'
+                
+                
+                powershell 'Copy-Item target/my-app.jar -Destination \\\\production-server\\path\\to\\deploy -Force'
             }
         }
     }
