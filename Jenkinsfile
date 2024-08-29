@@ -1,20 +1,22 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.8.1' // This should match the name you provided in the Global Tool Configuration
+    }
+
     stages {
         stage('Build') {
             steps {
                 echo 'Building the project...'
                 
-            
-                bat 'mvn clean package'
+                bat 'mvn clean package' 
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests...'
-                
                 
                 bat 'mvn test'
             }
@@ -24,7 +26,6 @@ pipeline {
             steps {
                 echo 'Performing Code Analysis...'
                 
-                
                 bat 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
         }
@@ -33,7 +34,6 @@ pipeline {
             steps {
                 echo 'Performing Security Scan...'
                
-                
                 bat 'dependency-check.bat --project my_project --out . --scan ./src'
             }
         }
@@ -42,7 +42,6 @@ pipeline {
             steps {
                 echo 'Deploying to Staging...'
                 
-               
                 powershell 'Copy-Item target/my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
             }
         }
@@ -51,7 +50,6 @@ pipeline {
             steps {
                 echo 'Running Integration Tests on Staging...'
                 
-           
                 powershell 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
             }
         }
@@ -59,7 +57,6 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                
                 
                 powershell 'Copy-Item target/my-app.jar -Destination \\\\production-server\\path\\to\\deploy -Force'
             }
@@ -69,7 +66,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            deleteDir() 
+            deleteDir()
         }
 
         success {
