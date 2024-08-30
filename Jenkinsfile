@@ -14,6 +14,7 @@ pipeline {
                 echo 'Running Unit and Integration Tests.x'
                 echo 'mvn test'
             }
+   
         }
 
         stage('Code Analysis') {
