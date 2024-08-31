@@ -44,6 +44,24 @@ pipeline {
                 echo 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
             }
         }
+         post {
+        always {
+            echo 'Cleaning up...'
+        }
+
+        success {
+            echo 'Build succeeded!'
+            mail to: 'sevin.dinsara@gmail.com',
+                 subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "The pipeline completed successfully."
+        }
+
+        failure {
+            echo 'Build failed!'
+            mail to: 'sevin.dinsara@gmail.com',
+                 subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "The pipeline failed. Please check the logs for details."
+        }
 
         stage('Deploy to Production') {
             steps {
