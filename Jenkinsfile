@@ -5,15 +5,21 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project.'
-                
-                bat 'javac -d target src/**/*.java'
+                bat '''
+                @echo off
+                setlocal
+                set CLASSPATH=target
+                for /R src %%f in (*.java) do (
+                    echo Compiling %%f
+                    javac -d target %%f
+                )
+                '''
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests.'
-                
                 bat 'java -cp target org.junit.runner.JUnitCore com.example.MyTests'
             }
         }
@@ -21,7 +27,6 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis...'
-           
                 bat 'sonar-scanner.bat -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
         }
@@ -29,7 +34,6 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Performing Security Scan...'
-              
                 bat 'dependency-check.bat --project my_project --out . --scan ./src'
             }
         }
@@ -37,7 +41,6 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                
                 bat 'Copy-Item target\\my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
             }
         }
@@ -45,7 +48,6 @@ pipeline {
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-               
                 bat 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
             }
         }
@@ -54,7 +56,6 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-        
         }
 
         success {
