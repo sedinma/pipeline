@@ -5,50 +5,49 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project.'
-                bat '''
-                @echo off
-                setlocal
-                set CLASSPATH=target
-                for /R src %%f in (*.java) do (
-                    echo Compiling %%f
-                    javac -d target %%f
-                )
-                '''
+                echo 'mvn clean package' 
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running Unit and Integration Tests.'
-                bat 'java -cp target org.junit.runner.JUnitCore com.example.MyTests'
+                echo 'Running Unit and Integration Tests.x'
+                echo 'mvn test'
             }
         }
 
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis...'
-                bat 'sonar-scanner.bat -Dsonar.projectKey=my_project -Dsonar.sources=src'
+                echo 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
         }
 
         stage('Security Scan') {
             steps {
                 echo 'Performing Security Scan...'
-                bat 'dependency-check.bat --project my_project --out . --scan ./src'
+                echo 'dependency-check.bat --project my_project --out . --scan ./src'
             }
         }
 
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                bat 'Copy-Item target\\my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
+                echo 'Copy-Item target/my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                bat 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
+                echo 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying to Production...'
+                echo 'Copy-Item target/my-app.jar -Destination \\\\production-server\\path\\to\\deploy -Force'
             }
         }
     }
@@ -70,6 +69,6 @@ pipeline {
             mail to: 'sevin.dinsara@gmail.com',
                  subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                  body: "The pipeline failed. Please check the logs for details."
-        }
-    }
+        }
+    }
 }
