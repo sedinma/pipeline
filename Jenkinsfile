@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                echo 'Copy-Item target/my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
+                echo 'Copy-Item target'
             }
         }
 
@@ -47,7 +47,7 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                echo 'Copy-Item target/my-app.jar -Destination \\\\production-server\\path\\to\\deploy -Force'
+                echo 'Copy-Item'
             }
         }
     }
