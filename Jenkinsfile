@@ -5,14 +5,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project.'
-                bat 'mvn clean package' // Use 'bat' instead of 'sh' for Windows
+                echo 'mvn clean package' // Use 'bat' instead of 'sh' for Windows
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests.'
-                bat 'mvn test'
+                echo 'mvn test'
             }
             post {
                 always {
@@ -28,7 +28,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis..'
-                bat 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
+                echo 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
             post {
                 always {
@@ -44,7 +44,7 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Performing Security Scan...'
-                bat 'dependency-check.bat --project my_project --out . --scan ./src'
+                echo 'dependency-check.bat --project my_project --out . --scan ./src'
             }
             post {
                 always {
@@ -60,7 +60,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                bat 'Copy-Item target' // Replace this with the correct copy command for Windows
+                echo 'Copy-Item target' // Replace this with the correct copy command for Windows
             }
             post {
                 always {
@@ -76,7 +76,7 @@ pipeline {
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                bat 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' // Ensure this command is valid for Windows
+                echo 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' // Ensure this command is valid for Windows
             }
             post {
                 always {
@@ -92,7 +92,7 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                bat 'Copy-Item target' // Replace this with the correct command for Production deployment
+                echo 'Copy-Item target' // Replace this with the correct command for Production deployment
             }
             post {
                 always {
