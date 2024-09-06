@@ -100,11 +100,13 @@ pipeline {
         }
 
         success {
-            echo 'Build succeeded!'
-            mail to: 'sevin.dinsara@gmail.com',
+            emailext {
+             attachLog : true,
+                 to: 'sevin.dinsara@gmail.com',
                  subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                  body: "The pipeline completed successfully."
         }
+    }
 
         failure {
             echo 'Build failed!'
