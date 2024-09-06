@@ -5,19 +5,18 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project.'
-                echo 'mvn clean package' // Use 'bat' instead of 'sh' for Windows
+                bat 'mvn clean package' // Use 'bat' instead of 'sh' for Windows
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests.'
-                echo 'mvn test'
+                bat 'mvn test'
             }
             post {
                 always {
                     emailext(
-                         emailext(
                         attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Unit and Integration Tests: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
@@ -30,12 +29,11 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis..'
-                echo 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
+                bat 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
             post {
                 always {
                     emailext(
-                         emailext(
                         attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Code Analysis: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
@@ -48,12 +46,11 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Performing Security Scan...'
-                echo 'dependency-check.bat --project my_project --out . --scan ./src'
+                bat 'dependency-check.bat --project my_project --out . --scan ./src'
             }
             post {
                 always {
                     emailext(
-                         emailext(
                         attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Security Scan: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
@@ -66,13 +63,12 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                echo 'Copy-Item target' // Replace this with the correct copy command for Windows
+                bat 'Copy-Item target' // Replace this with the correct copy command for Windows
             }
             post {
                 always {
                     emailext(
-                         emailext(
-                        attachLog: true, // Attach the log to the emai
+                        attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Deploy to Staging: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                         body: "Deployment to Staging has been executed. Please check the results."
@@ -84,12 +80,11 @@ pipeline {
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                echo 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' // Ensure this command is valid for Windows
+                bat 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' // Ensure this command is valid for Windows
             }
             post {
                 always {
                     emailext(
-                         emailext(
                         attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Integration Tests on Staging: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
@@ -102,12 +97,11 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                echo 'Copy-Item target' // Replace this with the correct command for Production deployment
+                bat 'Copy-Item target' // Replace this with the correct command for Production deployment
             }
             post {
                 always {
                     emailext(
-                         emailext(
                         attachLog: true, // Attach the log to the email
                         to: 'sevin.dinsara@gmail.com',
                         subject: "Deploy to Production: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
@@ -144,3 +138,4 @@ pipeline {
     }
 }
 
+       
