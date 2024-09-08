@@ -28,7 +28,7 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                echo 'Performing Code Analysis..'
+                echo 'Performing Code Analysis...'
                 echo 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
             post {
