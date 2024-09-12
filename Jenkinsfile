@@ -29,7 +29,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Performing Code Analysis...'
-                echo'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
+                echo 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
             }
             post {
                 always {
@@ -46,7 +46,7 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Performing Security Scan...'
-                echo'dependency-check.bat --project my_project --out . --scan ./src'
+                echo 'dependency-check.bat --project my_project --out . --scan ./src'
             }
             post {
                 always {
@@ -80,7 +80,7 @@ pipeline {
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                echo'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' 
+                echo 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing' 
             }
             post {
                 always {
@@ -97,13 +97,44 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                echo'Copy-Item target' 
+                echo 'Copy-Item target'
             }
             post {
                 always {
                     emailext(
                         attachLog: true,
                         to: 'sevin.dinsara@gmail.com',
-                    
+                        subject: "Deploy to Production: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: "Deployment to Production has been executed. Please check the results."
+                    )
+                }
+            }
+        }
+    }
 
-       
+    post {
+        always {
+            echo 'Cleaning up...'
+        }
+
+        success {
+            emailext(
+                attachLog: true,
+                to: 'sevin.dinsara@gmail.com',
+                subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "The pipeline completed successfully."
+            )
+        }
+
+        failure {
+            echo 'Build failed!'
+            emailext(
+                attachLog: true,
+                to: 'sevin.dinsara@gmail.com',
+                subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "The pipeline failed. Please check the logs for details."
+            )
+        }
+    }
+}
+
